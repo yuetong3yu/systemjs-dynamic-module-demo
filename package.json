@@ -1,0 +1,17 @@
+{
+  "name": "systemjs-dynamic-module-demo",
+  "version": "0.0.1",
+  "description": "a minimal viable demo to show the power of dynamic import",
+  "main": "module.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuetong3yu/systemjs-dynamic-module-demo.git"
+  },
+  "author": "chris yu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuetong3yu/systemjs-dynamic-module-demo/issues"
+  },
+  "homepage": "https://github.com/yuetong3yu/systemjs-dynamic-module-demo#readme"
+}
