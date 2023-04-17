@@ -13,5 +13,10 @@
   "bugs": {
     "url": "https://github.com/yuetong3yu/systemjs-dynamic-module-demo/issues"
   },
-  "homepage": "https://github.com/yuetong3yu/systemjs-dynamic-module-demo#readme"
+  "homepage": "https://github.com/yuetong3yu/systemjs-dynamic-module-demo#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.21.0",
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4"
+  }
 }
