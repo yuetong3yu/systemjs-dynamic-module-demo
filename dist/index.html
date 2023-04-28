@@ -5,12 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script
+    <!-- <script
       src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.14.1/system.min.js"
       integrity="sha512-5QtTSqKLlp9G1SmuQYBgk5t+rZ0/6yaqL/KGzq1Js66iUdLSgBBhIeOWGQa0GAe4fbo+gcw2dGzBdq2FdHGp9w=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
-    ></script>
+    ></script> -->
   </head>
   <body>
     <h1>Hi this is main application</h1>
@@ -26,6 +26,33 @@
     <div id="root"></div>
 
     <script>
+      class SystemJS {
+        import(id) {
+          // 这个 id 也可以支持 URL 地址，但这里不作实现
+          const newMapURL = {}
+          function processScripts() {
+            Array.from(document.querySelectorAll('script')).forEach(
+              (script) => {
+                if (script.type === 'systemjs-importmap') {
+                  const imports = JSON.parse(script.innerHTML).imports
+
+                  Object.entries(imports).forEach(([key, value]) => {
+                    newMapURL[key] = value
+                  })
+                }
+              }
+            )
+          }
+
+          // 1）根据 id（URL）找到对应的资源
+          return Promise.resolve(
+            processScript() /* 这个地方用来处理 import 声明的处理 */
+          ).then(() => {})
+        }
+      }
+
+      const System = new SystemJS()
+
       System.import('./index.js')
     </script>
   </body>
