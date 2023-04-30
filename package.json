@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "description": "a minimal viable demo to show the power of dynamic import",
   "main": "module.js",
-  "scripts": {},
+  "scripts": {
+    "dev": "webpack serve",
+    "build": "webpack --env production"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yuetong3yu/systemjs-dynamic-module-demo.git"
