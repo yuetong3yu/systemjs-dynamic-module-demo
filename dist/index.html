@@ -26,23 +26,22 @@
     <div id="root"></div>
 
     <script>
+      const newMapURL = {}
+      function processScripts() {
+        Array.from(document.querySelectorAll('script')).forEach((script) => {
+          if (script.type === 'systemjs-importmap') {
+            const imports = JSON.parse(script.innerHTML).imports
+
+            Object.entries(imports).forEach(([key, value]) => {
+              newMapURL[key] = value
+            })
+          }
+        })
+      }
+
       class SystemJS {
         import(id) {
           // 这个 id 也可以支持 URL 地址，但这里不作实现
-          const newMapURL = {}
-          function processScripts() {
-            Array.from(document.querySelectorAll('script')).forEach(
-              (script) => {
-                if (script.type === 'systemjs-importmap') {
-                  const imports = JSON.parse(script.innerHTML).imports
-
-                  Object.entries(imports).forEach(([key, value]) => {
-                    newMapURL[key] = value
-                  })
-                }
-              }
-            )
-          }
 
           // 1）根据 id（URL）找到对应的资源
           return Promise.resolve(
