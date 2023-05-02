@@ -46,9 +46,18 @@
           // 1）根据 id（URL）找到对应的资源
           return Promise.resolve(
             processScripts() /* 这个地方用来处理 import 声明的处理 */
-          ).then(() => {
-            console.log('1234 new map', newMapURL)
-          })
+          )
+            .then(() => {
+              // 第一个 then 的 block 中可以用来处理加载对应的资源，也就是 index.js
+              const lastSepIndex = location.href.lastIndexOf('/')
+              const baseURL = location.href.slice(0, lastSepIndex + 1)
+              if (id.startsWith('./')) {
+                return baseURL + id.slice(2)
+              }
+            })
+            .then((resourceURL) => {
+              console.log('1234 resource ', resourceURL)
+            })
         }
       }
 
