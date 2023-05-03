@@ -38,6 +38,19 @@
           }
         })
       }
+      function loadResource(remoteSource) {
+        return new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+          script.src = remoteSource
+          script.async = true
+
+          document.head.appendChild(script)
+
+          script.addEventListener('load', function () {
+            resolve()
+          })
+        })
+      }
 
       class SystemJS {
         import(id) {
@@ -56,7 +69,8 @@
               }
             })
             .then((resourceURL) => {
-              console.log('1234 resource ', resourceURL)
+              // 根据 资源路径 来加载资源
+              return loadResource(resourceURL).then(() => {})
             })
         }
       }
