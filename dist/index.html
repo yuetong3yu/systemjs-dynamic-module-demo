@@ -70,8 +70,14 @@
             })
             .then((resourceURL) => {
               // 根据 资源路径 来加载资源
-              return loadResource(resourceURL).then(() => {})
+              return loadResource(resourceURL).then(() => {
+                console.log('1234 loaded !')
+              })
             })
+        }
+
+        register(deps, declareFunc) {
+          console.log('1234 deps', deps, declareFunc)
         }
       }
 
