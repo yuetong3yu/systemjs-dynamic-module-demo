@@ -53,7 +53,23 @@
           })
         })
       }
-      function getLastGlobalProperty() {}
+
+      // 初始化的时候保存一次 window 的原始 keys
+      let set = new Set()
+      function saveGlobalProperty() {
+        for (let key in window) {
+          set.add(key)
+        }
+      }
+      saveGlobalProperty()
+
+      function getLastGlobalProperty() {
+        for (let key in window) {
+          if (set.has(key)) continue
+          set.add(key)
+          return window[key]
+        }
+      }
 
       let lastRegister
       class SystemJS {
@@ -73,22 +89,30 @@
               }
             })
             .then((resourceURL) => {
-              // 根据 资源路径 来加载资源
-              return loadResource(resourceURL).then((register) => {
-                const { setters, execute } = register[1](() => {})
+              let executeSaver
+              // 根据 资源路径 来加载资源(这个资源是指打包的资源)
+              return loadResource(resourceURL)
+                .then((register) => {
+                  const { setters, execute } = register[1](() => {})
+                  executeSaver = execute
 
-                return [register[0], setters]
-              })
-            })
-            .then(([registration, setters]) => {
-              registration.map((dep, idx) => {
-                const setterFunc = setters[idx]
-                loadResource(dep).then(() => {
-                  // 模块加载完毕后，会在 window 上添加属性 => window.React | window.ReactDOM
-                  // 因此在这里获取 window 上最后添加的属性
-                  setterFunc[i](getLastGlobalProperty())
+                  return [register[0], setters]
                 })
-              })
+                .then(([registration, setters]) => {
+                  // 加载对应的 cdn 资源
+                  return Promise.all(
+                    registration.map((dep, idx) => {
+                      return loadResource(dep).then(() => {
+                        // 模块加载完毕后，会在 window 上添加属性 => window.React | window.ReactDOM
+                        // 因此在这里获取 window 上最后添加的属性
+                        setters[idx](getLastGlobalProperty())
+                      })
+                    })
+                  )
+                })
+                .then(() => {
+                  executeSaver()
+                })
             })
         }
 
