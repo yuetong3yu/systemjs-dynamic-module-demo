@@ -41,17 +41,21 @@
       function loadResource(remoteSource) {
         return new Promise((resolve, reject) => {
           const script = document.createElement('script')
-          script.src = remoteSource
+          script.src = newMapURL[remoteSource] || remoteSource // 同时支持 cdn 和本地文件的加载
           script.async = true
 
           document.head.appendChild(script)
 
           script.addEventListener('load', function () {
-            resolve()
+            let _lastRegister = lastRegister
+            lastRegister = null
+            resolve(_lastRegister)
           })
         })
       }
+      function getLastGlobalProperty() {}
 
+      let lastRegister
       class SystemJS {
         import(id) {
           // 这个 id 也可以支持 URL 地址，但这里不作实现
@@ -70,14 +74,26 @@
             })
             .then((resourceURL) => {
               // 根据 资源路径 来加载资源
-              return loadResource(resourceURL).then(() => {
-                console.log('1234 loaded !')
+              return loadResource(resourceURL).then((register) => {
+                const { setters, execute } = register[1](() => {})
+
+                return [register[0], setters]
+              })
+            })
+            .then(([registration, setters]) => {
+              registration.map((dep, idx) => {
+                const setterFunc = setters[idx]
+                loadResource(dep).then(() => {
+                  // 模块加载完毕后，会在 window 上添加属性 => window.React | window.ReactDOM
+                  // 因此在这里获取 window 上最后添加的属性
+                  setterFunc[i](getLastGlobalProperty())
+                })
               })
             })
         }
 
         register(deps, declareFunc) {
-          console.log('1234 deps', deps, declareFunc)
+          lastRegister = [deps, declareFunc]
         }
       }
 
